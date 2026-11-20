@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Soft Voting Ensemble — Solar Flare Classification</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    svg {
+      max-width: 1020px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+<svg width="100%" viewBox="0 0 1020 620" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- TITLE -->
+<text x="510" y="20" text-anchor="middle" font-size="13" font-weight="500" fill="#0C447C">Soft voting ensemble — solar flare classification</text>
+
+<!-- ═══════════════════════
+     INPUT BLOCK (left)
+     centre-Y = 310
+════════════════════════ -->
+<rect x="18" y="220" width="148" height="180" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="92" y="252" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Test data</text>
+<text x="92" y="274" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">SWAN-SF dataset</text>
+<text x="92" y="293" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#185FA5">SAVNCPP · ABSNJZH</text>
+<text x="92" y="309" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#185FA5">R_VALUE · EPSZ · TOTFZ</text>
+<text x="92" y="330" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#185FA5">Same input fed</text>
+<text x="92" y="347" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#185FA5">to all models</text>
+
+<!-- ═══════════════════════
+     THREE PARALLEL MODELS
+     M1 centre-Y =  95  (top)
+     M2 centre-Y = 310  (mid)
+     M3 centre-Y = 525  (bot)
+     x: 240 → 460, width 222
+════════════════════════ -->
+
+<!-- shared vertical spine from input right edge -->
+<line x1="166" y1="310" x2="195" y2="310" stroke="#888780" stroke-width="1.2"/>
+<line x1="195" y1="95"  x2="195" y2="525" stroke="#888780" stroke-width="1.2"/>
+
+<!-- horizontal branches to each model -->
+<line x1="195" y1="95"  x2="240" y2="95"  stroke="#888780" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="195" y1="310" x2="240" y2="310" stroke="#888780" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="195" y1="525" x2="240" y2="525" stroke="#888780" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+<!-- MODEL 1: SW Decomposition LSTM (top) centre Y=95 -->
+<rect x="240" y="42" width="222" height="106" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="351" y="63"  text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#27500A">SW Decomposition LSTM</text>
+<text x="351" y="82"  text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">Window: 32 · stride: 4</text>
+<text x="351" y="97"  text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">Trend + residual decomposition</text>
+<text x="351" y="112" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">LSTM (hidden=128, 2 layers)</text>
+<text x="351" y="127" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">Focal Loss (α=0.75, γ=2.0)</text>
+
+<!-- MODEL 2: Decomposition LSTM Full Seq (middle) centre Y=310 -->
+<rect x="240" y="257" width="222" height="106" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="351" y="278" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#27500A">Decomposition LSTM</text>
+<text x="351" y="296" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">Full sequence</text>
+<text x="351" y="312" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">Trend + residual decomposition</text>
+<text x="351" y="328" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">LSTM (hidden=64)</text>
+<text x="351" y="344" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">Focal Loss (α=0.75, γ=2.0)</text>
+
+<!-- MODEL 3: XGBoost (bottom) centre Y=525 -->
+<rect x="240" y="472" width="222" height="106" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="351" y="493" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#27500A">XGBoost</text>
+<text x="351" y="511" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">n_estimators: 400 · max_depth: 4</text>
+<text x="351" y="527" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">learning_rate: 0.05</text>
+<text x="351" y="543" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3B6D11">scale_pos_weight: neg/pos</text>
+
+<!-- ═══════════════════════
+     CONVERGENCE ARROWS → fusion
+     shared vertical spine x=530
+════════════════════════ -->
+
+<!-- probability labels -->
+<text x="494" y="91"  text-anchor="middle" font-size="10" fill="#888780" font-style="italic">p₁</text>
+<text x="494" y="306" text-anchor="middle" font-size="10" fill="#888780" font-style="italic">p₂</text>
+<text x="494" y="521" text-anchor="middle" font-size="10" fill="#888780" font-style="italic">p₃</text>
+
+<!-- horizontal legs from each model to spine x=530 -->
+<line x1="462" y1="95"  x2="530" y2="95"  stroke="#888780" stroke-width="1.2"/>
+<line x1="462" y1="310" x2="530" y2="310" stroke="#888780" stroke-width="1.2"/>
+<line x1="462" y1="525" x2="530" y2="525" stroke="#888780" stroke-width="1.2"/>
+
+<!-- vertical spine connecting all three to fusion -->
+<line x1="530" y1="95"  x2="530" y2="525" stroke="#888780" stroke-width="1.2"/>
+
+<!-- single arrow from spine into fusion block -->
+<line x1="530" y1="310" x2="548" y2="310" stroke="#888780" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+<!-- ═══════════════════════
+     FUSION BLOCK
+     x:548 w:190 centre Y=310
+════════════════════════ -->
+<rect x="548" y="228" width="190" height="164" rx="10" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="643" y="254" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#3C3489">Soft voting</text>
+<text x="643" y="273" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#534AB7">Probability averaging</text>
+<text x="643" y="294" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#534AB7">Input: p₁, p₂, p₃</text>
+<text x="643" y="316" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#3C3489">p_final = (p₁+p₂+p₃) / 3</text>
+<text x="643" y="338" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#534AB7">Equal weights · all models</text>
+<text x="643" y="358" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#534AB7">Combined probability</text>
+
+<!-- fusion → output pipeline spine -->
+<line x1="738" y1="310" x2="750" y2="310" stroke="#888780" stroke-width="1.2"/>
+<line x1="750" y1="72"  x2="750" y2="480" stroke="#888780" stroke-width="1.2"/>
+<line x1="750" y1="72"  x2="762" y2="72"  stroke="#888780" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="750" y1="188" x2="762" y2="188" stroke="#888780" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="750" y1="304" x2="762" y2="304" stroke="#888780" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="750" y1="436" x2="762" y2="436" stroke="#888780" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+<!-- ═══════════════════════
+     RIGHT OUTPUT PIPELINE
+════════════════════════ -->
+
+<!-- Final Probability -->
+<rect x="762" y="44" width="200" height="56" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="862" y="66"  text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#27500A">Final probability</text>
+<text x="862" y="86"  text-anchor="middle" dominant-baseline="central" font-size="11" fill="#3B6D11">Combined probability (0 – 1)</text>
+
+<!-- Threshold Selection -->
+<rect x="762" y="160" width="200" height="56" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="862" y="182" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Threshold selection</text>
+<text x="862" y="202" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">FPR ≤ 0.10 · range 0.1–0.9</text>
+
+<!-- Final Prediction -->
+<rect x="762" y="276" width="200" height="56" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="862" y="298" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Final prediction</text>
+<text x="862" y="318" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">Binary classification</text>
+
+<!-- Evaluation Metrics -->
+<rect x="762" y="392" width="200" height="88" rx="10" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="862" y="416" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#633806">Evaluation metrics</text>
+<text x="862" y="438" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#854F0B">ROC-AUC · PR-AUC</text>
+<text x="862" y="458" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#854F0B">TSS · HSS</text>
+
+<!-- ═══════════════════════
+     LEGEND
+════════════════════════ -->
+<rect x="80" y="560" width="840" height="28" rx="8" fill="none" stroke="#D3D1C7" stroke-width="0.5"/>
+
+<rect x="124" y="568" width="12" height="12" rx="3" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+<text x="142" y="574" dominant-baseline="central" font-size="11" fill="#185FA5">Input data</text>
+
+<rect x="260" y="568" width="12" height="12" rx="3" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+<text x="278" y="574" dominant-baseline="central" font-size="11" fill="#3B6D11">Individual models</text>
+
+<rect x="436" y="568" width="12" height="12" rx="3" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="454" y="574" dominant-baseline="central" font-size="11" fill="#534AB7">Ensemble fusion</text>
+
+<rect x="612" y="568" width="12" height="12" rx="3" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="630" y="574" dominant-baseline="central" font-size="11" fill="#854F0B">Output / evaluation</text>
+
+</svg>
+</body>
+</html>
